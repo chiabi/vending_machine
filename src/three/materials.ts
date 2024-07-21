@@ -6,8 +6,7 @@ import {
 } from 'three';
 
 export const applyMaterials = (mesh: Mesh): void => {
-  if (!/Floor|Rock|Mine|Cactus|Camera|Glass/gi.test(mesh.name))
-    console.log(mesh.name);
+  if (/Can/gi.test(mesh.name)) console.log(mesh.name);
   switch (mesh.name) {
     case 'Floor':
       mesh.material = new MeshToonMaterial({
@@ -101,7 +100,6 @@ export const applyMaterials = (mesh: Mesh): void => {
         transmission: 0.9,
         transparent: true,
         opacity: 0.5,
-        envMapIntensity: 1,
         clearcoat: 1,
         clearcoatRoughness: 0,
         reflectivity: 1,
@@ -117,12 +115,145 @@ export const applyMaterials = (mesh: Mesh): void => {
         transmission: 0.5,
         transparent: true,
         opacity: 0.5,
-        envMapIntensity: 1,
         clearcoat: 1,
         clearcoatRoughness: 0,
         reflectivity: 1,
         side: DoubleSide,
       });
+      break;
+    case 'CoinEnterTorus':
+      mesh.material = new MeshToonMaterial({
+        color: 0x004119,
+      });
+      mesh.castShadow = true;
+      mesh.receiveShadow = true;
+      break;
+    case 'Boolean':
+      mesh.material = new MeshToonMaterial({
+        color: 0x16291d,
+      });
+      mesh.castShadow = true;
+      mesh.receiveShadow = true;
+      break;
+    case 'CoinEnterOutlineEllipse':
+      mesh.material = new MeshToonMaterial({
+        color: 0x18100f,
+      });
+      break;
+    case mesh.name.match(/Bar/)?.input:
+      mesh.material = new MeshToonMaterial({
+        color: 0xc20000,
+      });
+      mesh.castShadow = true;
+      mesh.receiveShadow = true;
+      break;
+    case 'PriceDisplay':
+    case mesh.name.match(/ButtonBody/)?.input:
+      mesh.material = new MeshToonMaterial({
+        color: 0x18100f,
+      });
+      break;
+    case mesh.name.match(/ButtonOulineLight/)?.input:
+      mesh.material = new MeshPhysicalMaterial({
+        color: 0x00d600,
+        metalness: 0,
+        roughness: 0,
+        transmission: 0.5,
+        transparent: true,
+        opacity: 0.5,
+        clearcoat: 1,
+        clearcoatRoughness: 0,
+        reflectivity: 1,
+        side: DoubleSide,
+      });
+      break;
+    case mesh.name.match(/ButtonSoldoutLight/)?.input:
+      mesh.material = new MeshPhysicalMaterial({
+        color: 0xaf6600,
+        metalness: 0,
+        roughness: 0,
+        transmission: 0.5,
+        transparent: true,
+        opacity: 0.5,
+        clearcoat: 1,
+        clearcoatRoughness: 0,
+        reflectivity: 1,
+        side: DoubleSide,
+      });
+      break;
+    case mesh.name.match(/CoinButton/)?.input:
+      mesh.material = new MeshToonMaterial({
+        color: 0x7c7c7c,
+      });
+      mesh.castShadow = true;
+      mesh.receiveShadow = true;
+      break;
+    case mesh.name.match(
+      /CanUppiece|CanBase|CanUpcontorn|CanRingball|CanRingpar/
+    )?.input:
+      mesh.material = new MeshPhysicalMaterial({
+        color: 0x888888,
+        metalness: 1,
+        roughness: 0.5,
+        clearcoat: 1,
+        clearcoatRoughness: 0.1,
+      });
+      break;
+    case 'CanBody':
+      mesh.material = new MeshToonMaterial({
+        color: 0xff8a8a,
+      });
+      mesh.castShadow = true;
+      mesh.receiveShadow = true;
+      break;
+    case 'CanBody_1':
+      mesh.material = new MeshToonMaterial({
+        color: 0x00d5ff,
+      });
+      mesh.castShadow = true;
+      mesh.receiveShadow = true;
+      break;
+    case 'CanBody_2':
+      mesh.material = new MeshToonMaterial({
+        color: 0x0bb148,
+      });
+      mesh.castShadow = true;
+      mesh.receiveShadow = true;
+      break;
+    case 'CanBody_3':
+      mesh.material = new MeshToonMaterial({
+        color: 0xdd0edb,
+      });
+      mesh.castShadow = true;
+      mesh.receiveShadow = true;
+      break;
+    case 'CanBody_4':
+      mesh.material = new MeshToonMaterial({
+        color: 0x49c409,
+      });
+      mesh.castShadow = true;
+      mesh.receiveShadow = true;
+      break;
+    case 'CanBody_5':
+      mesh.material = new MeshToonMaterial({
+        color: 0x500f50,
+      });
+      mesh.castShadow = true;
+      mesh.receiveShadow = true;
+      break;
+    case 'CanBody_6':
+      mesh.material = new MeshToonMaterial({
+        color: 0x172cdd,
+      });
+      mesh.castShadow = true;
+      mesh.receiveShadow = true;
+      break;
+    case 'CanBody_7':
+      mesh.material = new MeshToonMaterial({
+        color: 0xee9b13,
+      });
+      mesh.castShadow = true;
+      mesh.receiveShadow = true;
       break;
     default:
       break;
