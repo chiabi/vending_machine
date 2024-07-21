@@ -8,6 +8,7 @@ import {
   loadModel,
 } from '../three';
 import { setupGUI } from '../three/gui';
+import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
 
 export const ModelViewer: React.FC = () => {
   const mount_ref = useRef<HTMLDivElement>(null);
@@ -22,6 +23,8 @@ export const ModelViewer: React.FC = () => {
     const renderer = createRenderer();
     const lights = createLights(scene);
 
+    const controls = new OrbitControls(camera, renderer.domElement);
+
     mount_ref.current.appendChild(renderer.domElement);
 
     loadModel(scene, '/models/vending_machine.gltf');
@@ -32,7 +35,9 @@ export const ModelViewer: React.FC = () => {
       camera,
     });
 
-    renderer.setAnimationLoop(() => animate(renderer, scene, camera));
+    renderer.setAnimationLoop(() =>
+      animate({ renderer, scene, camera, controls })
+    );
 
     return () => {
       mount_ref.current?.removeChild(renderer.domElement);
