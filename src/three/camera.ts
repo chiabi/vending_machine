@@ -11,5 +11,6 @@ export const createCamera = () => {
   camera.rotation.set(-26, 0, 0);
   camera.scale.set(1, 1, 1);
   camera.lookAt(0, 0, 0);
+
   return camera;
 };
