@@ -1,5 +1,5 @@
 {
-  "name": "temp-vite-project",
+  "name": "vending-machine",
   "private": true,
   "version": "0.0.0",
   "type": "module",
@@ -9,7 +9,8 @@
     "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
     "preview": "vite preview",
     "test": "vitest",
-    "format": "prettier --write \"src/**/*.{ts,tsx}\""
+    "format": "prettier --write \"src/**/*.{ts,tsx}\"",
+    "tools:convert": "pnpm --filter @vending-machine/tools run convert"
   },
   "dependencies": {
     "prettier": "^3.3.3",

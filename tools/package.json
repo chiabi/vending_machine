@@ -1,0 +1,20 @@
+{
+  "name": "@vending-machine/tools",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "convert": "ts-node src/camelCaseConverter"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@inquirer/prompts": "^5.3.0",
+    "@types/node": "^20.14.11",
+    "picocolors": "^1.0.1",
+    "ts-morph": "^23.0.0",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.2.2"
+  }
+}
