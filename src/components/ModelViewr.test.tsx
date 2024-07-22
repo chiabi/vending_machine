@@ -5,9 +5,9 @@ import * as THREE from 'three';
 import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
 
 vi.mock('three', () => {
-  const actual_three = vi.importActual('three');
+  const actualThree = vi.importActual('three');
   return {
-    ...actual_three,
+    ...actualThree,
     WebGLRenderer: vi.fn(() => ({
       setSize: vi.fn(),
       setAnimationLoop: vi.fn(),
@@ -64,7 +64,7 @@ vi.mock('three/examples/jsm/controls/OrbitControls', () => ({
 }));
 
 vi.mock('lil-gui', () => {
-  const actual_lil_gui = vi.importActual('lil-gui');
+  const actualLilGui = vi.importActual('lil-gui');
 
   const mockAdd = vi.fn().mockReturnValue({
     onChange: vi.fn(),
@@ -75,7 +75,7 @@ vi.mock('lil-gui', () => {
   };
 
   return {
-    ...actual_lil_gui,
+    ...actualLilGui,
     GUI: vi.fn(() => ({
       addFolder: vi.fn().mockReturnValue(mockFolder),
     })),

@@ -3,19 +3,19 @@ import {
   Scene,
   DirectionalLight,
   PerspectiveCamera,
-  Color,
+  // Color,
   AmbientLight,
 } from 'three';
 
 export function setupGUI({
-  scene,
-  directional_light,
-  ambient_light,
+  // scene,
+  // directionalLight,
+  // ambientLight,
   camera,
 }: {
   scene: Scene;
-  directional_light: DirectionalLight;
-  ambient_light: AmbientLight;
+  directionalLight: DirectionalLight;
+  ambientLight: AmbientLight;
   camera: PerspectiveCamera;
 }) {
   const gui = new GUI();
