@@ -46,6 +46,11 @@ vi.mock('three', () => {
       },
     })),
     AmbientLight: vi.fn(),
+    LoadingManager: vi.fn(() => ({
+      onProgress: vi.fn(),
+      onLoad: vi.fn(),
+      onError: vi.fn(),
+    })),
   };
 });
 
@@ -114,8 +119,6 @@ describe('ModelViewer', () => {
     expect(GLTFLoader).toHaveBeenCalled();
     expect(mockLoad).toHaveBeenCalledWith(
       '/models/vending_machine.gltf',
-      expect.any(Function),
-      expect.any(Function),
       expect.any(Function)
     );
   });
