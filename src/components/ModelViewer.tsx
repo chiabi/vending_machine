@@ -10,8 +10,8 @@ import {
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
 
 interface ModelViewerProps {
-  onProgress: (progress: number) => void;
-  onLoadComplete: () => void;
+  onProgress?: (progress: number) => void;
+  onLoadComplete?: () => void;
 }
 
 export const ModelViewer: React.FC<ModelViewerProps> = ({

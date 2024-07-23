@@ -5,8 +5,8 @@ import { applyMaterials } from './materials';
 export const loadModel = (
   scene: Scene,
   url: string,
-  onProgress: (progress: number) => void,
-  onLoad: () => void
+  onProgress?: (progress: number) => void,
+  onLoad?: () => void
 ): void => {
   const loader = new GLTFLoader();
   loader.load(
@@ -18,10 +18,10 @@ export const loadModel = (
         }
       });
       scene.add(gltf.scene);
-      onLoad();
+      onLoad?.();
     },
     (progress) => {
-      onProgress((progress.loaded / progress.total) * 100);
+      onProgress?.((progress.loaded / progress.total) * 100);
     },
     (error) => {
       console.error('An error happened', error);
