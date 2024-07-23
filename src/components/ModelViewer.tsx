@@ -7,7 +7,6 @@ import {
   createScene,
   loadModel,
 } from '../three';
-import { setupGUI } from '../three/gui';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
 
 export const ModelViewer: React.FC = () => {
@@ -28,12 +27,17 @@ export const ModelViewer: React.FC = () => {
     mountRef.current.appendChild(renderer.domElement);
 
     loadModel(scene, '/models/vending_machine.gltf');
-    setupGUI({
-      scene,
-      directionalLight: lights.directionalLight,
-      ambientLight: lights.ambientLight,
-      camera,
-    });
+
+    if (import.meta.env.DEV) {
+      import('../three/gui').then(({ setupGUI }) => {
+        setupGUI({
+          scene,
+          directionalLight: lights.directionalLight,
+          ambientLight: lights.ambientLight,
+          camera,
+        });
+      });
+    }
 
     renderer.setAnimationLoop(() =>
       animate({ renderer, scene, camera, controls })
