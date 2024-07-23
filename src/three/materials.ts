@@ -7,7 +7,6 @@ import {
 } from 'three';
 
 export const applyMaterials = (mesh: Mesh): void => {
-  if (/Can/gi.test(mesh.name)) console.log(mesh.name);
   switch (mesh.name) {
     case 'Floor':
       mesh.material = new MeshToonMaterial({
