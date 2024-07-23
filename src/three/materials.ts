@@ -5,6 +5,7 @@ import {
   MeshStandardMaterial,
   MeshToonMaterial,
 } from 'three';
+import cans from '../assets/cans.json';
 
 export const applyMaterials = (mesh: Mesh): void => {
   switch (mesh.name) {
@@ -199,58 +200,9 @@ export const applyMaterials = (mesh: Mesh): void => {
         clearcoatRoughness: 0.1,
       });
       break;
-    case 'CanBody':
+    case mesh.name.match(/CanBody/)?.input:
       mesh.material = new MeshStandardMaterial({
-        color: 0x02f2f8,
-      });
-      mesh.castShadow = true;
-      mesh.receiveShadow = true;
-      break;
-    case 'CanBody_1':
-      mesh.material = new MeshStandardMaterial({
-        color: 0xf7eb45,
-      });
-      mesh.castShadow = true;
-      mesh.receiveShadow = true;
-      break;
-    case 'CanBody_2':
-      mesh.material = new MeshStandardMaterial({
-        color: 0xc44fff,
-      });
-      mesh.castShadow = true;
-      mesh.receiveShadow = true;
-      break;
-    case 'CanBody_3':
-      mesh.material = new MeshStandardMaterial({
-        color: 0x4f5bff,
-      });
-      mesh.castShadow = true;
-      mesh.receiveShadow = true;
-      break;
-    case 'CanBody_4':
-      mesh.material = new MeshStandardMaterial({
-        color: 0x00a8ff,
-      });
-      mesh.castShadow = true;
-      mesh.receiveShadow = true;
-      break;
-    case 'CanBody_5':
-      mesh.material = new MeshStandardMaterial({
-        color: 0xff3ccd,
-      });
-      mesh.castShadow = true;
-      mesh.receiveShadow = true;
-      break;
-    case 'CanBody_6':
-      mesh.material = new MeshStandardMaterial({
-        color: 0x79ff00,
-      });
-      mesh.castShadow = true;
-      mesh.receiveShadow = true;
-      break;
-    case 'CanBody_7':
-      mesh.material = new MeshStandardMaterial({
-        color: 0xff8c00,
+        color: cans[mesh.name as keyof typeof cans]?.color ?? 0x888888,
       });
       mesh.castShadow = true;
       mesh.receiveShadow = true;

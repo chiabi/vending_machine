@@ -51,6 +51,8 @@ vi.mock('three', () => {
       onLoad: vi.fn(),
       onError: vi.fn(),
     })),
+    DirectionalLightHelper: vi.fn(),
+    CameraHelper: vi.fn(),
   };
 });
 
@@ -128,24 +130,28 @@ describe('ModelViewer', () => {
     expect(OrbitControls).toHaveBeenCalled();
   });
 
-  it('calls setupGUI in DEV environment', async () => {
+  it('calls setupGUI and Helpers in DEV environment', async () => {
     const originalEnv = import.meta.env.DEV;
     import.meta.env.DEV = true;
 
     await render(<ModelViewer />);
     const { setupGUI } = await import('../three/gui');
     expect(setupGUI).toHaveBeenCalled();
+    expect(THREE.DirectionalLightHelper).toHaveBeenCalled();
+    expect(THREE.CameraHelper).toHaveBeenCalled();
 
     import.meta.env.DEV = originalEnv;
   });
 
-  it('does not call setupGUI in non-DEV environment', async () => {
+  it('does not call setupGUI and Helpers in non-DEV environment', async () => {
     const originalEnv = import.meta.env.DEV;
     import.meta.env.DEV = false;
 
     await render(<ModelViewer />);
     const { setupGUI } = await import('../three/gui');
     expect(setupGUI).not.toHaveBeenCalled();
+    expect(THREE.DirectionalLightHelper).not.toHaveBeenCalled();
+    expect(THREE.CameraHelper).not.toHaveBeenCalled();
 
     import.meta.env.DEV = originalEnv;
   });

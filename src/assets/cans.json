@@ -1,0 +1,42 @@
+{
+  "CanBody": {
+    "color": "#f7eb45",
+    "price": 800,
+    "button": "ButtonBody"
+  },
+  "CanBody_1": {
+    "color": "#02f2f8",
+    "price": 800,
+    "button": "ButtonBody_1"
+  },
+  "CanBody_2": {
+    "color": "#c44fff",
+    "price": 750,
+    "button": "ButtonBody_2"
+  },
+  "CanBody_3": {
+    "color": "#4f5bff",
+    "price": 1000,
+    "button": "ButtonBody_3"
+  },
+  "CanBody_4": {
+    "color": "#00a8ff",
+    "price": 1200,
+    "button": "ButtonBody_4"
+  },
+  "CanBody_5": {
+    "color": "#ff3ccd",
+    "price": 900,
+    "button": "ButtonBody_5"
+  },
+  "CanBody_6": {
+    "color": "#79ff00",
+    "price": 650,
+    "button": "ButtonBody_6"
+  },
+  "CanBody_7": {
+    "color": "#ff8c00",
+    "price": 650,
+    "button": "ButtonBody_7"
+  }
+}

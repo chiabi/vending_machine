@@ -1,6 +1,8 @@
 import { LoadingManager, Mesh, Scene } from 'three';
 import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
 import { applyMaterials } from './materials';
+import cans from '../assets/cans.json';
+import { createCanPriceGeometry } from './geometries';
 
 export const loadModel = (
   scene: Scene,
@@ -20,13 +22,20 @@ export const loadModel = (
   };
 
   const loader = new GLTFLoader(manager);
-  loader.load(url, (gltf) => {
+  loader.load(url, async (gltf) => {
     gltf.scene.traverse((child) => {
-      if (child instanceof Mesh) {
-        applyMaterials(child);
+      if (!(child instanceof Mesh)) {
+        return;
       }
+      applyMaterials(child);
     });
     scene.add(gltf.scene);
-    onLoad?.();
+    Object.values(cans).map(async ({ button, price }) => {
+      const mesh = gltf.scene.getObjectByName(button);
+      if (!mesh) {
+        return;
+      }
+      createCanPriceGeometry(mesh, price);
+    });
   });
 };
