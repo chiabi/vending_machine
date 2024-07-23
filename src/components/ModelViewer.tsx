@@ -44,6 +44,8 @@ export const ModelViewer: React.FC = () => {
     );
 
     return () => {
+      renderer.setAnimationLoop(null);
+      controls.dispose();
       mountRef.current?.removeChild(renderer.domElement);
     };
   }, []);

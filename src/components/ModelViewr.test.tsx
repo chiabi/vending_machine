@@ -3,6 +3,7 @@ import { render } from '@testing-library/react';
 import { ModelViewer } from './ModelViewer';
 import * as THREE from 'three';
 import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
+import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
 
 vi.mock('three', () => {
   const actualThree = vi.importActual('three');
@@ -57,6 +58,7 @@ vi.mock('three/addons/loaders/GLTFLoader.js', () => ({
 
 vi.mock('three/examples/jsm/controls/OrbitControls', () => ({
   OrbitControls: vi.fn(() => ({
+    dispose: vi.fn(),
     update: vi.fn(),
     addEventListener: vi.fn(),
     removeEventListener: vi.fn(),
@@ -82,6 +84,10 @@ vi.mock('lil-gui', () => {
   };
 });
 
+vi.mock('../three/gui', () => ({
+  setupGUI: vi.fn(),
+}));
+
 describe('ModelViewer', () => {
   beforeEach(() => {
     document.body.innerHTML = '<div id="root"></div>';
@@ -105,7 +111,6 @@ describe('ModelViewer', () => {
 
   it('loads the 3D model', async () => {
     render(<ModelViewer />);
-
     expect(GLTFLoader).toHaveBeenCalled();
     expect(mockLoad).toHaveBeenCalledWith(
       '/models/vending_machine.gltf',
@@ -113,5 +118,43 @@ describe('ModelViewer', () => {
       expect.any(Function),
       expect.any(Function)
     );
+  });
+
+  it('initializes OrbitControls', () => {
+    render(<ModelViewer />);
+    expect(OrbitControls).toHaveBeenCalled();
+  });
+
+  it('calls setupGUI in DEV environment', async () => {
+    const originalEnv = import.meta.env.DEV;
+    import.meta.env.DEV = true;
+
+    await render(<ModelViewer />);
+    const { setupGUI } = await import('../three/gui');
+    expect(setupGUI).toHaveBeenCalled();
+
+    import.meta.env.DEV = originalEnv;
+  });
+
+  it('does not call setupGUI in non-DEV environment', async () => {
+    const originalEnv = import.meta.env.DEV;
+    import.meta.env.DEV = false;
+
+    await render(<ModelViewer />);
+    const { setupGUI } = await import('../three/gui');
+    expect(setupGUI).not.toHaveBeenCalled();
+
+    import.meta.env.DEV = originalEnv;
+  });
+
+  it('cleans up resources on unmount', () => {
+    const { unmount } = render(<ModelViewer />);
+    unmount();
+    expect(
+      vi.mocked(THREE.WebGLRenderer).mock.results[0].value.setAnimationLoop
+    ).toHaveBeenCalledWith(null);
+    expect(
+      vi.mocked(OrbitControls).mock.results[0].value.dispose
+    ).toHaveBeenCalled();
   });
 });
