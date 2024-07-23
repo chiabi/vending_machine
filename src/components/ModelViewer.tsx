@@ -9,7 +9,15 @@ import {
 } from '../three';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
 
-export const ModelViewer: React.FC = () => {
+interface ModelViewerProps {
+  onProgress: (progress: number) => void;
+  onLoadComplete: () => void;
+}
+
+export const ModelViewer: React.FC<ModelViewerProps> = ({
+  onProgress,
+  onLoadComplete,
+}) => {
   const mountRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -21,12 +29,16 @@ export const ModelViewer: React.FC = () => {
     const camera = createCamera();
     const renderer = createRenderer();
     const lights = createLights(scene);
-
     const controls = new OrbitControls(camera, renderer.domElement);
 
     mountRef.current.appendChild(renderer.domElement);
 
-    loadModel(scene, '/models/vending_machine.gltf');
+    loadModel(
+      scene,
+      '/models/vending_machine.gltf',
+      onProgress,
+      onLoadComplete
+    );
 
     if (import.meta.env.DEV) {
       import('../three/gui').then(({ setupGUI }) => {
