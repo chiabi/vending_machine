@@ -2,7 +2,7 @@ import { LoadingManager, Mesh, Scene } from 'three';
 import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
 import { applyMaterials } from './materials';
 import cans from '../assets/cans.json';
-import { createCanPriceGeometry } from './geometries';
+import { createCanPriceTextMesh } from './meshes';
 
 export const loadModel = (
   scene: Scene,
@@ -35,7 +35,8 @@ export const loadModel = (
       if (!mesh) {
         return;
       }
-      createCanPriceGeometry(mesh, price);
+      const textMesh = await createCanPriceTextMesh(price);
+      mesh.add(textMesh);
     });
   });
 };
