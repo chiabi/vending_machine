@@ -34,68 +34,85 @@ function renameDeclaration(filePath: string) {
       | PropertySignature
   ) => {
     const oldName = declaration.getName();
-    if (oldName.includes('_')) {
-      const newName = toCamelCase(oldName);
-      const references = declaration.findReferences();
-
-      references.forEach((refEntry) => {
-        refEntry.getReferences().forEach((ref) => {
-          const refNode = ref.getNode();
-          const sourceFile = ref.getSourceFile();
-
-          if (
-            Node.isIdentifier(refNode) &&
-            sourceFile.getFilePath() !== filePath
-          ) {
-            refNode.replaceWithText(newName);
-            console.log(
-              pc.yellow(
-                `Updated References: ${sourceFile.getFilePath()}:${getNodeLineNumber(ref.getNode(), sourceFile)}`
-              )
-            );
-          }
-        });
-      });
-
-      declaration.rename(newName);
+    // ^[a-z]      : 소문자로 시작하고
+    // (?!.*[A-Z]) : 대문자를 포함하지 않으며
+    // .*_.*       : 언더스코어를 적어도 하나 포함하는 문자열
+    if (!/^[a-z](?!.*[A-Z]).*_.*$/.test(oldName)) {
+      return false;
     }
+    const newName = toCamelCase(oldName);
+    const references = declaration.findReferences();
+
+    references.forEach((refEntry) => {
+      refEntry.getReferences().forEach((ref) => {
+        const refNode = ref.getNode();
+        const sourceFile = ref.getSourceFile();
+
+        if (
+          Node.isIdentifier(refNode) &&
+          sourceFile.getFilePath() !== filePath
+        ) {
+          refNode.replaceWithText(newName);
+          console.log(
+            pc.yellow(
+              `Updated References: ${sourceFile.getFilePath()}:${getNodeLineNumber(ref.getNode(), sourceFile)}`
+            )
+          );
+        }
+      });
+    });
+
+    declaration.rename(newName);
+    return true;
   };
 }
 
 function convertSourceFile(sourceFile: SourceFile): void {
   const rename = renameDeclaration(sourceFile.getFilePath());
+
   // 객체 리터럴의 속성 이름 변경
-  sourceFile
+  const renamedShorthandPropertyAssignment = sourceFile
     .getDescendantsOfKind(SyntaxKind.ShorthandPropertyAssignment)
-    .forEach(rename);
+    .map(rename)
+    .some((renamed) => renamed);
 
   // 모든 변수 선언을 찾아 이름을 변경
-  sourceFile.forEachDescendant((node) => {
-    if (Node.isVariableDeclaration(node)) {
-      rename(node);
-    }
-  });
+  const renamedVariableDeclaration = sourceFile
+    .getDescendantsOfKind(SyntaxKind.VariableDeclaration)
+    .map(rename)
+    .some((renamed) => renamed);
 
   // 함수 매개변수 이름 변경
-  sourceFile.getFunctions().forEach((func) => {
-    func.getParameters().forEach(rename);
-  });
+  const renamedFunctionParameters = sourceFile
+    .getDescendantsOfKind(SyntaxKind.Parameter)
+    .map(rename)
+    .some((renamed) => renamed);
 
   // 리액트 컴포넌트의 props 타입 선언 변경
-  sourceFile.getInterfaces().forEach((interfaceDeclaration) => {
-    interfaceDeclaration.getProperties().forEach(rename);
-  });
+  const renamedInterfaceProperties = sourceFile
+    .getDescendantsOfKind(SyntaxKind.PropertySignature)
+    .map(rename)
+    .some((renamed) => renamed);
 
   // 프로퍼티 이름 변경 (객체 리터럴 내부)
-  sourceFile
+  const renamedPropertyAssignments = sourceFile
     .getDescendantsOfKind(SyntaxKind.PropertyAssignment)
-    .forEach((prop) => {
-      if (Node.isIdentifier(prop.getNameNode())) {
-        rename(prop);
-      }
-    });
+    .filter((prop) => Node.isIdentifier(prop.getNameNode()))
+    .map(rename)
+    .some((renamed) => renamed);
 
-  console.log(pc.green(`Updated ${sourceFile.getFilePath()}`));
+  // 어떤 리네임 작업이라도 실행되었다면 메시지 출력
+  if (
+    renamedShorthandPropertyAssignment ||
+    renamedVariableDeclaration ||
+    renamedFunctionParameters ||
+    renamedInterfaceProperties ||
+    renamedPropertyAssignments
+  ) {
+    console.log(pc.green(`Updated ${sourceFile.getFilePath()}`));
+  } else {
+    console.log(pc.gray(`Read ${sourceFile.getFilePath()}`));
+  }
 }
 
 function convertFile(filePath: string): void {
