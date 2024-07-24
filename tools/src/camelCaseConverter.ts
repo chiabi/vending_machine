@@ -3,6 +3,7 @@ import fs from 'fs';
 import path from 'path';
 import pc from 'picocolors';
 import {
+  BindingElement,
   Node,
   ParameterDeclaration,
   Project,
@@ -32,6 +33,7 @@ function renameDeclaration(filePath: string) {
       | PropertyAssignment
       | ParameterDeclaration
       | PropertySignature
+      | BindingElement
   ) => {
     const oldName = declaration.getName();
     // ^[a-z]      : 소문자로 시작하고
@@ -74,32 +76,52 @@ function convertSourceFile(sourceFile: SourceFile): void {
   const renamedShorthandPropertyAssignment = sourceFile
     .getDescendantsOfKind(SyntaxKind.ShorthandPropertyAssignment)
     .map(rename)
-    .some((renamed) => renamed);
+    .some(Boolean);
 
   // 모든 변수 선언을 찾아 이름을 변경
   const renamedVariableDeclaration = sourceFile
     .getDescendantsOfKind(SyntaxKind.VariableDeclaration)
     .map(rename)
-    .some((renamed) => renamed);
+    .some(Boolean);
 
   // 함수 매개변수 이름 변경
   const renamedFunctionParameters = sourceFile
     .getDescendantsOfKind(SyntaxKind.Parameter)
     .map(rename)
-    .some((renamed) => renamed);
+    .some(Boolean);
 
   // 리액트 컴포넌트의 props 타입 선언 변경
   const renamedInterfaceProperties = sourceFile
     .getDescendantsOfKind(SyntaxKind.PropertySignature)
     .map(rename)
-    .some((renamed) => renamed);
+    .some(Boolean);
 
   // 프로퍼티 이름 변경 (객체 리터럴 내부)
   const renamedPropertyAssignments = sourceFile
     .getDescendantsOfKind(SyntaxKind.PropertyAssignment)
     .filter((prop) => Node.isIdentifier(prop.getNameNode()))
     .map(rename)
-    .some((renamed) => renamed);
+    .some(Boolean);
+
+  // ArrayBindingPattern 처리
+  const renamedArrayBindingPatterns = sourceFile
+    .getDescendantsOfKind(SyntaxKind.ArrayBindingPattern)
+    .map((node) => {
+      let renamed = false;
+      node.getElements().forEach((element) => {
+        if (Node.isBindingElement(element)) {
+          const name = element.getNameNode();
+          if (Node.isIdentifier(name)) {
+            const newName = rename(element);
+            if (newName) {
+              renamed = true;
+            }
+          }
+        }
+      });
+      return renamed;
+    })
+    .some(Boolean);
 
   // 어떤 리네임 작업이라도 실행되었다면 메시지 출력
   if (
@@ -107,7 +129,8 @@ function convertSourceFile(sourceFile: SourceFile): void {
     renamedVariableDeclaration ||
     renamedFunctionParameters ||
     renamedInterfaceProperties ||
-    renamedPropertyAssignments
+    renamedPropertyAssignments ||
+    renamedArrayBindingPatterns
   ) {
     console.log(pc.green(`Updated ${sourceFile.getFilePath()}`));
   } else {
