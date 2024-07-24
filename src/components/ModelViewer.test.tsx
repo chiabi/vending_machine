@@ -132,7 +132,7 @@ describe('ModelViewer', () => {
     expect(OrbitControls).toHaveBeenCalled();
   });
 
-  it('calls setupGUI and Helpers in DEV environment', async () => {
+  it('adds debug helpers in DEV environment', async () => {
     const originalEnv = import.meta.env.DEV;
     import.meta.env.DEV = true;
 
@@ -145,7 +145,7 @@ describe('ModelViewer', () => {
     import.meta.env.DEV = originalEnv;
   });
 
-  it('does not call setupGUI and Helpers in non-DEV environment', async () => {
+  it('does not add debug helpers in non-DEV environment', async () => {
     const originalEnv = import.meta.env.DEV;
     import.meta.env.DEV = false;
 
