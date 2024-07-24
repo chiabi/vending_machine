@@ -1,12 +1,6 @@
-import {
-  AmbientLight,
-  CameraHelper,
-  DirectionalLight,
-  DirectionalLightHelper,
-  Scene,
-} from 'three';
+import { AmbientLight, DirectionalLight } from 'three';
 
-export const createLights = (scene: Scene) => {
+export const createLights = () => {
   const directionalLight = new DirectionalLight(0xffffff, 2);
   directionalLight.position.set(140, 90, -8);
   directionalLight.intensity = 2;
@@ -17,19 +11,8 @@ export const createLights = (scene: Scene) => {
   directionalLight.shadow.camera.top = 30;
   directionalLight.shadow.camera.bottom = -30;
   directionalLight.castShadow = true;
-  scene.add(directionalLight);
 
   const ambientLight = new AmbientLight(0xffffff, 1.5);
-  scene.add(ambientLight);
-
-  if (import.meta.env.DEV) {
-    const light_helper = new DirectionalLightHelper(directionalLight, 5);
-    scene.add(light_helper);
-
-    const camera_helper = new CameraHelper(directionalLight.shadow.camera);
-    scene.add(camera_helper);
-  }
-
   return {
     directionalLight,
     ambientLight,

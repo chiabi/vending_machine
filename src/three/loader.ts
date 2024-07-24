@@ -1,4 +1,4 @@
-import { Group, LoadingManager, Mesh, Scene } from 'three';
+import { Group, LoadingManager, Mesh } from 'three';
 import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
 import { applyMaterials } from './materials';
 import cans from '../assets/cans.json';
@@ -44,7 +44,7 @@ export const processModel = (model: Group) => {
   });
 };
 
-export const createPriceTexts = async (model: Group) => {
+export const addPriceTexts = async (model: Group) => {
   for (const { button, price } of Object.values(cans)) {
     const mesh = model.getObjectByName(button);
     if (!mesh) {
@@ -56,19 +56,14 @@ export const createPriceTexts = async (model: Group) => {
 };
 
 export const loadModel = async (
-  scene: Scene,
   url: string,
   onProgress?: (progress: number) => void,
   onLoad?: () => void
 ) => {
   const loadingManager = createLoadingManager(onProgress, onLoad);
 
-  try {
-    const model = await loadGLTF(url, loadingManager);
-    processModel(model);
-    await createPriceTexts(model);
-    scene.add(model);
-  } catch (error) {
-    console.error('Failed to load model:', error);
-  }
+  const model = await loadGLTF(url, loadingManager);
+  processModel(model);
+  addPriceTexts(model);
+  return model;
 };

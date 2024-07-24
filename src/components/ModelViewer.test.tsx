@@ -121,6 +121,8 @@ describe('ModelViewer', () => {
     expect(GLTFLoader).toHaveBeenCalled();
     expect(mockLoad).toHaveBeenCalledWith(
       '/models/vending_machine.gltf',
+      expect.any(Function),
+      undefined,
       expect.any(Function)
     );
   });

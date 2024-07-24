@@ -8,6 +8,32 @@ import {
   loadModel,
 } from '../three';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
+import {
+  CameraHelper,
+  DirectionalLightHelper,
+  PerspectiveCamera,
+  Scene,
+} from 'three';
+
+const addDebugHelpers = (
+  scene: Scene,
+  lights: ReturnType<typeof createLights>,
+  camera: PerspectiveCamera
+) => {
+  import('../three/gui').then(({ setupGUI }) => {
+    setupGUI({
+      scene,
+      directionalLight: lights.directionalLight,
+      ambientLight: lights.ambientLight,
+      camera,
+    });
+  });
+  const light_helper = new DirectionalLightHelper(lights.directionalLight, 5);
+  scene.add(light_helper);
+
+  const camera_helper = new CameraHelper(lights.directionalLight.shadow.camera);
+  scene.add(camera_helper);
+};
 
 interface ModelViewerProps {
   onProgress?: (progress: number) => void;
@@ -28,32 +54,23 @@ export const ModelViewer: React.FC<ModelViewerProps> = ({
     const scene = createScene();
     const camera = createCamera();
     const renderer = createRenderer();
-    const lights = createLights(scene);
+    const lights = createLights();
     const controls = new OrbitControls(camera, renderer.domElement);
 
-    mountRef.current.appendChild(renderer.domElement);
+    scene.add(lights.directionalLight);
+    scene.add(lights.ambientLight);
 
-    loadModel(
-      scene,
-      '/models/vending_machine.gltf',
-      onProgress,
-      onLoadComplete
+    loadModel('/models/vending_machine.gltf', onProgress, onLoadComplete).then(
+      (model) => scene.add(model)
     );
-
-    if (import.meta.env.DEV) {
-      import('../three/gui').then(({ setupGUI }) => {
-        setupGUI({
-          scene,
-          directionalLight: lights.directionalLight,
-          ambientLight: lights.ambientLight,
-          camera,
-        });
-      });
-    }
-
+    mountRef.current?.appendChild(renderer.domElement);
     renderer.setAnimationLoop(() =>
       animate({ renderer, scene, camera, controls })
     );
+
+    if (import.meta.env.DEV) {
+      addDebugHelpers(scene, lights, camera);
+    }
 
     return () => {
       renderer.setAnimationLoop(null);
