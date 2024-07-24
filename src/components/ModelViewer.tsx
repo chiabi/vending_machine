@@ -28,11 +28,11 @@ const addDebugHelpers = (
       camera,
     });
   });
-  const light_helper = new DirectionalLightHelper(lights.directionalLight, 5);
-  scene.add(light_helper);
+  const lightHelper = new DirectionalLightHelper(lights.directionalLight, 5);
+  scene.add(lightHelper);
 
-  const camera_helper = new CameraHelper(lights.directionalLight.shadow.camera);
-  scene.add(camera_helper);
+  const cameraHelper = new CameraHelper(lights.directionalLight.shadow.camera);
+  scene.add(cameraHelper);
 };
 
 interface ModelViewerProps {
